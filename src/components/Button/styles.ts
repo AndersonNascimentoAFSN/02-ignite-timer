@@ -21,7 +21,7 @@ export const ButtonContainer = styled.button<IButtonContainerProps>`
   margin: 8px;
   cursor: pointer;
 
-  background: ${(props) => props.theme.primary};
+  background: ${(props) => props.theme['green-500']};
   color: ${(props) => props.theme.white};
 
   /* ${(props) => css`background-color: ${buttonVariants[props.variant]}`} */
