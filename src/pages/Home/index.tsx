@@ -32,7 +32,7 @@ const newCycloFormValidationSchema = zod.object({
 type newCycloFormData = zod.infer<typeof newCycloFormValidationSchema>
 
 export function Home() {
-  const { register, handleSubmit, watch /* formState */ } =
+  const { register, handleSubmit, watch, reset /* formState */ } =
     useForm<newCycloFormData>({
       resolver: zodResolver(newCycloFormValidationSchema),
       defaultValues: {
@@ -43,6 +43,7 @@ export function Home() {
 
   function handleCreateNewCyclo(data: newCycloFormData) {
     console.log(data)
+    reset()
   }
 
   const isSubmitDisabled = !watch('task') || !watch('minutesAmount')
