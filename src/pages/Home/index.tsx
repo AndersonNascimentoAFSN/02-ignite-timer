@@ -1,4 +1,8 @@
 import { Play } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+
 import {
   CountDownContainer,
   FormContainer,
@@ -9,10 +13,43 @@ import {
   TaskInput,
 } from './styles'
 
+const newCycloFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'O valor deve ser maior ou igual a 5')
+    .max(999, 'O valor deve ser menor ou igual a 999')
+    .step(5),
+})
+
+// type newCycloFormData = typeof newCycloFormValidationSchema
+
+// interface newCycleFormData {
+//   task: string
+//   minutesAmount: number
+// }
+
+type newCycloFormData = zod.infer<typeof newCycloFormValidationSchema>
+
 export function Home() {
+  const { register, handleSubmit, watch /* formState */ } =
+    useForm<newCycloFormData>({
+      resolver: zodResolver(newCycloFormValidationSchema),
+      defaultValues: {
+        task: '',
+        minutesAmount: 0,
+      },
+    })
+
+  function handleCreateNewCyclo(data: newCycloFormData) {
+    console.log(data)
+  }
+
+  const isSubmitDisabled = !watch('task') || !watch('minutesAmount')
+
   return (
     <HomeContainer>
-      <form action="">
+      <form action="" onSubmit={handleSubmit(handleCreateNewCyclo)}>
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput
@@ -20,6 +57,7 @@ export function Home() {
             type="text"
             placeholder="Dê um nome para o seu projeto"
             list="task-suggestions"
+            {...register('task')}
           />
 
           <datalist id="task-suggestions">
@@ -32,10 +70,11 @@ export function Home() {
           <MinutesAmountInput
             type="number"
             id="minutesAmount"
-            min={1}
-            max={999}
+            min={5}
             step={5}
+            max={999}
             placeholder="00"
+            {...register('minutesAmount', { valueAsNumber: true })}
           />
 
           <span>minutos.</span>
@@ -49,7 +88,7 @@ export function Home() {
           <span>0</span>
         </CountDownContainer>
 
-        <StartCountButton type="submit">
+        <StartCountButton type="submit" disabled={isSubmitDisabled}>
           <Play size={24} />
           Começar
         </StartCountButton>
