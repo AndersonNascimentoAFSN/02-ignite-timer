@@ -24,7 +24,7 @@ interface ICyclesContextType {
   resetActiveCycles: () => void
   definedAmountSecondsPassed: (secondsPassed: number) => void
   createNewCyclo: (data: ICreateCycleData) => void
-  interruptCycle: () => void
+  interruptCurrentCycle: () => void
 }
 
 export const CyclesContext = createContext({} as ICyclesContextType)
@@ -71,7 +71,7 @@ export function CyclesContextProvider({
     setAmountSecondsPassed(0)
   }
 
-  function interruptCycle() {
+  function interruptCurrentCycle() {
     setCycles((state) =>
       state.map((cycle) => {
         if (cycle.id === activeCycleId)
@@ -95,7 +95,7 @@ export function CyclesContextProvider({
         amountSecondsPassed,
         definedAmountSecondsPassed,
         createNewCyclo,
-        interruptCycle,
+        interruptCurrentCycle,
       }}
     >
       {children}
